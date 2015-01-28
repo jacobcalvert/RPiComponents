@@ -40,7 +40,7 @@ def some_callback(some_arg0):
         
 switch_pin_number = 6
 
-switch = parts.Switch.SwitchWithThreadedCallback(switch_pin_number, callback=some_callback, callback_args=[1,2,3])
+switch = parts.Switch.ThreadedCallbackSwitch(switch_pin_number, callback=some_callback, callback_args=[1,2,3])
 
 switch.start()
 
