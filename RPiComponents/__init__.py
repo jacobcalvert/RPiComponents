@@ -12,6 +12,7 @@ import BasicLogic
 import LED
 import L293DMotor
 import Switch
+import ADC
 
 
 def finalize():

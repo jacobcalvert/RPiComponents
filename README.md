@@ -3,8 +3,7 @@ RPiComponents is a wrapper for common applications in the RPi.GPIO library.
 I got tired of writing gpio.output(some_pin, gpio.HIGH) a million times in a program
 so I just wrapped that up into something nicer where I can now just say led.on() or led.off()
 
-I have some ADC code for the MCP3008 ADC from MicroChip to put up where I bit-bang the SPI interface
-to get data from it. The below examples are from my blog post [here](http://jacobncalvert.com/blog/post/raspberry-pi-and-gpio-updates).
+The below examples are from my blog post [here](http://jacobncalvert.com/blog/post/raspberry-pi-and-gpio-updates).
 To see more about my RPi stuff [visit my blog](http://jacobncalvert.com/blog/) and look for stuff with the [raspberry pi tag](http://jacobncalvert.com/blog/post/?tag=raspberry%20pi)
 
 ```python
@@ -53,4 +52,13 @@ switch.stop()
 #  switch.stop() properly terminates the monitor thread
 
 parts.finalize()  # clean up after ourselves and reset the GPIO pins for some other use
+
+#  now with ADC code!! Using the MicroChip MCP3008 ADC
+
+adc = ADC.MCP3008()  # defaults to bus 0, chip 0, 500kHz operation
+
+result = adc.read(adc.CH0)  # read the 10 bit data from CH0 in single ended operation
+
+result = adc.read(adc.CH0_POS_CH1_NEG)  # read the 10 bit data of the range between CH0+ and CH1-
+
 ```
