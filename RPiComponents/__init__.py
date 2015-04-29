@@ -13,6 +13,7 @@ import LED
 import L293DMotor
 import Switch
 import ADC
+import EEPROM_24CXX
 
 
 def finalize():

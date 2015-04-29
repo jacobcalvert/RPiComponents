@@ -61,4 +61,20 @@ result = adc.read(adc.CH0)  # read the 10 bit data from CH0 in single ended oper
 
 result = adc.read(adc.CH0_POS_CH1_NEG)  # read the 10 bit data of the range between CH0+ and CH1-
 
+#  now with EEPROM support over I2C
+
+e2prom_addr = 0x50
+i2c_bus = 1 #  /dev/i2c-1
+addr_mode = EEPROM_24CXX.BasicEEPROM.ADDRESS_MODE_16BIT
+eeprom = EEPROM_24CXX.BasicEEPROM(e2prom_addr, addr_mode, i2c_bus)
+
+eeprom.write_bytes(0, [1,2,3,4,5,6])  #  write the list of bytes to the storage device starting at storage position 0
+
+eeprom.write_string(256, "Hello, World!!")  #  write the ASCII interpretation of the string start at position 256 
+
+eeprom.read_string(256, len("Hello, World!!"))  #  returns the string stored at 256 and of length len(...)
+
+eeprom.read_bytes(256, 10) # read 10 bytes from 256 -> 266
+
+
 ```
