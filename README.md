@@ -1,7 +1,15 @@
-RPiComponents is a wrapper for common applications in the RPi.GPIO library.
+RPiComponents is a wrapper for accessing harware functions in a better way. 
 
 I got tired of writing gpio.output(some_pin, gpio.HIGH) a million times in a program
 so I just wrapped that up into something nicer where I can now just say led.on() or led.off()
+
+There are abstractions for many common hardware applications. To name a few:
+
+* LEDs controlled by GPIO
+* Switches with threaded interrupts
+* L293D Motor controller with both PWM and basic on/off
+* ADC (MCP3008 support) via SPI
+* EEPROM (24CXX series support) via I2C/SMbus
 
 The below examples are from my blog post [here](http://jacobncalvert.com/blog/post/raspberry-pi-and-gpio-updates).
 To see more about my RPi stuff [visit my blog](http://jacobncalvert.com/blog/) and look for stuff with the [raspberry pi tag](http://jacobncalvert.com/blog/post/?tag=raspberry%20pi)
