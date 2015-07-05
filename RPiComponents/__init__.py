@@ -14,7 +14,8 @@ import L293DMotor
 import Switch
 import ADC
 import EEPROM_24CXX
-
+import LCD
+import RF24
 
 def finalize():
     """
