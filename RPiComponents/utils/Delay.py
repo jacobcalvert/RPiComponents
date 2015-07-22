@@ -33,10 +33,10 @@ def sleep_us(us):
     """
     sleep the current thread for the specified
     number of microseconds
-    :param us: microeconds to sleep
+    :param us: microseconds to sleep
     :return:
     """
-    sleep_ns(us * 10**-3)
+    sleep_ms(us * 10**-3)
 
 
 def sleep_ns(ns):
