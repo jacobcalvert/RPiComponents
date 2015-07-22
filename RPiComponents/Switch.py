@@ -35,7 +35,7 @@ class ThreadedCallbackSwitch(BasicLogic.BasicToggleInput, threading.Thread):
         threading.Thread.__init__(self)
         self._callback = callback
         self._callback_args = callback_args
-        self._run_flag = False
+        self._run_flag = threading.Event()
         self._trigger = positive_trig
         self._inst_id = ThreadedCallbackSwitch.INST_COUNT+1
         ThreadedCallbackSwitch.INST_COUNT += 1
@@ -46,9 +46,9 @@ class ThreadedCallbackSwitch(BasicLogic.BasicToggleInput, threading.Thread):
         start the thread by calling the start() method on this object.
         kthx
         """
-        self._run_flag = True
+        self._run_flag.set()
         last_val = self.sample()
-        while self._run_flag:
+        while self._run_flag.isSet():
             sample = self.sample()
             if sample == last_val:
                 time.sleep(self.SLEEP_DELAY_S)
@@ -71,6 +71,6 @@ class ThreadedCallbackSwitch(BasicLogic.BasicToggleInput, threading.Thread):
 
     def stop(self):
         """
-        sets the run/stop flag to false so the monitoring thread will exit cleanly
+        sets the run/stop flag event to false so the monitoring thread will exit cleanly
         """
-        self._run_flag = False
+        self._run_flag.clear()
