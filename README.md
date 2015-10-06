@@ -41,23 +41,16 @@ motor.rev(90)  # starts the motor in reverse at 90% of the max speed
 motor.disable() # all speed and direction setting are kept but the motor will stop
 
 
-def some_callback(some_arg0):
+def some_callback(pin_number):
     print "Called some_callback with argument %s" % (some_arg0)
 
         
 switch_pin_number = 6
 
-switch = parts.Switch.ThreadedCallbackSwitch(switch_pin_number, callback=some_callback, callback_args=[1,2,3])
+switch = parts.BasicLogic.ToggleInputCallback(switch_pin_number, callback=some_callback)
 
-switch.start()
+#  this adds a positive edge detection event callback on pin 6
 
-#  calling switch.start() starts a monitor thread that waits for a rising or falling edge
-#  due to the switch changing state, it will then fire off callback with the arguments given
-#  or if callback_args is None, it will simply call the callback
-
-switch.stop()
-
-#  switch.stop() properly terminates the monitor thread
 
 parts.finalize()  # clean up after ourselves and reset the GPIO pins for some other use
 

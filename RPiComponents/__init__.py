@@ -11,11 +11,11 @@ import RPi.GPIO as gpio
 import BasicLogic
 import LED
 import L293DMotor
-import Switch
 import ADC
 import EEPROM_24CXX
 import LCD
 import RF24
+import RangeFinders
 
 def finalize():
     """

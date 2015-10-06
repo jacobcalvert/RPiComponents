@@ -148,3 +148,88 @@ class BasicToggleInput(object):
         @return a value T/F or 1/0 indicating the state of the pin
         """
         return self._gpio.input(self._pin)
+
+
+class BasicToggleInputOutput(object):
+    MODE_IN = 0
+    MODE_OUT= 1
+
+    def __init__(self, pin, mode=MODE_IN, pud=None, numbering=gpio.BCM, _gpio=gpio):
+        self._pin = pin
+        self._gpio = _gpio
+        self._gpio.setmode(numbering)
+        self._pud = pud
+        if mode == BasicToggleInputOutput.MODE_IN:
+            self.set_input()
+        else:
+            self.set_output()
+
+    def sample(self):
+        return self._gpio.input(self._pin)
+
+    def set_output(self):
+        self._gpio.setup(self._pin, self._gpio.OUT)
+
+    def set_input(self):
+        if self._pud:
+                self._gpio.setup(self._pin, self._gpio.IN, pull_up_down=self._pud)  # using internal pud resistor
+        else:
+                self._gpio.setup(self._pin, self._gpio.IN)  # external pud
+
+    def high(self):
+        """
+        sets the pin to the logic HIGH state
+        """
+        self._gpio.output(self._pin, self._gpio.HIGH)
+
+    def low(self):
+        """
+        sets the pin to the logic LOW state
+        """
+        self._gpio.output(self._pin, self._gpio.LOW)
+
+    def hi(self):
+        """
+        alias of high()
+        """
+        self.high()
+
+    def lo(self):
+        """
+        alias of low()
+        """
+        self.low()
+
+    def value(self):
+        """
+        gets the current value (hi/lo) of the pin
+        @return a value T/F or 1/0 indicating the state of the pin
+        """
+        return self._gpio.input(self._pin)
+
+
+class ToggleInputCallback(BasicToggleInput):
+
+    DEBOUNCE_DELAY_MS = 2
+    INST_COUNT = 0
+
+    def __init__(self, pin, callback=None, debounce_delay=DEBOUNCE_DELAY_MS, edge=gpio.RISING, pud=None, numbering=gpio.BCM, _gpio=gpio):
+        """
+        ThreadedCallbackSwitch constructor
+        @param pin the GPIO pin number to be used
+        @param callback the callback to be fired when the switch is activated
+        @param callback_args the arguments to be passed to the callback
+        @param edge RISING, FALLING, or BOTH
+        @param numbering the pin numbering system (RPi.GPIO.BOARD or RPi.GPIO.BCM)
+        @param _gpio the gpio object if using a different than the default
+        """
+        BasicToggleInput.__init__(self, pin, pud=pud, numbering=numbering, _gpio=gpio)
+        self._callback = callback
+        if callback is None:
+            self._callback = self.default_callback
+        self._inst_id = ToggleInputCallback.INST_COUNT+1
+        ToggleInputCallback.INST_COUNT += 1
+        self._gpio.add_event_detect(self._pin, edge, self._callback, debounce_delay)
+
+    def default_callback(self, pin):
+        print "Callback happened on ToggleInputCallback instance # %d @ pin %d" % (self._inst_id, pin)

@@ -10,7 +10,8 @@
     by a PWM controlled variable speed on/off/fwd/rev control object
 """
 import RPi.GPIO as gpio
-
+from BasicLogic import BasicToggleOutput
+from utils import Delay
 
 class BasicL293DMotor(object):
 
@@ -163,6 +164,92 @@ class VariableSpeedL293DMotor(BasicL293DMotor):
         self._direction = self.REV
         self._rev_pwm.ChangeDutyCycle(self._pwm_duty_cycle)
         self._fwd_pwm.ChangeDutyCycle(0)
+
+
+class BipolarL293DStepperMotor(object):
+
+    FWD = 1
+    STOPPED = 0
+    REV = -1
+
+    STEP_DELAY = 500 # us
+
+    def __init__(self, enable_pin, pin1a, pin1b, pin2a, pin2b, step_delay=STEP_DELAY, numbering=gpio.BCM, _gpio=gpio):
+
+        self._enable = BasicToggleOutput(enable_pin, numbering, _gpio)
+        self._control_pins = [None] * 4
+        self._pin1a = BasicToggleOutput(pin1a, numbering, _gpio)
+        self._pin1b = BasicToggleOutput(pin1b, numbering, _gpio)
+        self._pin2a  = BasicToggleOutput(pin2a, numbering, _gpio)
+        self._pin2b = BasicToggleOutput(pin2b, numbering, _gpio)
+
+
+        self._step_delay = step_delay
+
+    def enable(self):
+        self._enable.hi()
+
+    def disable(self):
+        self._enable.lo()
+
+    def step(self, direction=FWD):
+        if direction == BipolarL293DStepperMotor.FWD:
+            self._pin1a.hi()
+            self._pin2a.hi()
+            self._pin1b.lo()
+            self._pin2b.lo()
+            Delay.sleep_us(self._step_delay)
+
+            self._pin1a.lo()
+            self._pin2a.hi()
+            self._pin1b.hi()
+            self._pin2b.lo()
+            Delay.sleep_us(self._step_delay)
+
+            self._pin1a.lo()
+            self._pin2a.lo()
+            self._pin1b.hi()
+            self._pin2b.hi()
+            Delay.sleep_us(self._step_delay)
+
+            self._pin1a.hi()
+            self._pin2a.lo()
+            self._pin1b.lo()
+            self._pin2b.hi()
+
+        elif direction == BipolarL293DStepperMotor.STOPPED:
+            return
+        elif direction == BipolarL293DStepperMotor.REV:
+            self._pin1a.hi()
+            self._pin2a.lo()
+            self._pin1b.lo()
+            self._pin2b.hi()
+            Delay.sleep_us(self._step_delay)
+
+            self._pin1a.lo()
+            self._pin2a.lo()
+            self._pin1b.hi()
+            self._pin2b.hi()
+            Delay.sleep_us(self._step_delay)
+
+            self._pin1a.lo()
+            self._pin2a.hi()
+            self._pin1b.hi()
+            self._pin2b.lo()
+            Delay.sleep_us(self._step_delay)
+
+            self._pin1a.hi()
+            self._pin2a.hi()
+            self._pin1b.lo()
+            self._pin2b.lo()
+
+
+
+
+
+
+
+
 
 
 
