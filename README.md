@@ -77,5 +77,19 @@ eeprom.read_string(256, len("Hello, World!!"))  #  returns the string stored at 
 
 eeprom.read_bytes(256, 10) # read 10 bytes from 256 -> 266
 
+#  now with NRF24L01+ support over SPI bus
+
+spi_bus_major = 0
+spi_bus_minor = 0
+interrupt_pin = 19
+chip_enable_pin = 26
+
+radio = RF24.Radio(spi_bus_major, spi_bus_minor, interrupt_pin, chip_enable_pin)
+radio.setup_basic()  #  an easy startup routine
+
+radio.write_str("Hello, world!")
+
+# if two radios are up on the same RPi, you can call radio2.read_str() and retrieve 'Hello, world!'
+
 
 ```
